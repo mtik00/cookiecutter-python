@@ -1,5 +1,7 @@
 {
-    "project_slug": "mypythonpackage",
+    "project_name": "My New Project",
+    "project_slug": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
+    "pkg_name": "{{ cookiecutter.project_slug|replace('-', '') }}",
     "project_description": "Description of project",
     "full_name": "Your name",
     "email": "Your email",
