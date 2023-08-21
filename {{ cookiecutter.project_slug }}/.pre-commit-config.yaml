@@ -37,3 +37,9 @@ repos:
       name: isort (python)
       stages: [pre-commit]
       args: ["--profile", "black"]
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: 'v1.4.1'
+  hooks:
+  - id: mypy
+    stages: [pre-commit]
+    args: ["--ignore-missing-imports"]
