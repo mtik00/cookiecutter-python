@@ -10,19 +10,30 @@ repos:
     stages: [pre-commit]
   - id: check-yaml
     stages: [pre-commit]
+  - id: check-merge-conflict
+    stages: [pre-commit]
+  - id: debug-statements
+    stages: [pre-commit]
 - repo: https://github.com/psf/black
-  rev: 23.3.0
+  rev: 23.7.0
   hooks:
   - id: black
     stages: [pre-commit]
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: 3.2.0
+  rev: 3.6.0
   hooks:
   - id: commitizen
     stages: [commit-msg]
 - repo: https://github.com/PyCQA/flake8
-  rev: 6.0.0
+  rev: 6.1.0
   hooks:
   - id: flake8
     stages: [pre-commit]
     args: ["--max-line-length", "200", "--ignore", "E203,W503"]
+- repo: https://github.com/pycqa/isort
+  rev: 5.12.0
+  hooks:
+    - id: isort
+      name: isort (python)
+      stages: [pre-commit]
+      args: ["--profile", "black"]
