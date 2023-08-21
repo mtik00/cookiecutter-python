@@ -1,14 +1,76 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from subprocess import check_call
+import json
+import sys
+import urllib.request
+from pathlib import Path
+from subprocess import check_output
+import datetime
 
+
+def request(
+    url: str,
+    method: str | None = None,
+    data: dict | None = None,
+    query_params: dict | None = None,
+    raise_on_error: bool = True,
+) -> str | dict | list:
+    headers = {
+        "Content-Type": "application/vnd.github+json",
+    }
+
+    encoded_data: bytes | None = None
+    if data:
+        encoded_data = json.dumps(data).encode("utf-8")
+
+    if query_params:
+        encoded_params = urllib.parse.urlencode(query_params)
+        url = f"{url}?{encoded_params}"
+
+    req = urllib.request.Request(url, data=encoded_data, headers=headers, method=method)
+
+    page = None
+    try:
+        with urllib.request.urlopen(req) as response:
+            page = response.read()
+    except urllib.error.HTTPError as e:
+        if raise_on_error:
+            raise
+
+        print("WARNING: status code", e.status)
+        print("...", e.url)
+        print("...", str(e))
+        return ""
+
+    try:
+        result = json.loads(page)
+    except Exception:
+        result = page
+
+    return result
+
+
+def mit_license():
+    result = request("https://api.github.com/licenses/mit")
+    body: str = result["body"]
+    body = body.replace("[year]", str(datetime.datetime.now().year))
+    body = body.replace("[fullname]", "{{ cookiecutter.full_name }}")
+
+    Path("LICENSE").write_text(body)
+
+
+venv_dir = f".direnv/python-{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 # Install the Python venv compatible with direnv
-check_call(["direnv", "allow"])
-check_call(["python", "-m", "venv", ".direnv/python-3.11"])
+check_output(["direnv", "allow"])
+check_output(["python", "-m", "venv", venv_dir])
+
+license = "{{ cookiecutter.license }}"
+if license == "MIT":
+    mit_license()
 
 # I'm too lazy to figure out how to do all of this here.  The main issue is
-# kicking off direnv.ascii
+# kicking off direnv.
 print(
     """
 >>>>>>>>>> PROJECT SETUP <<<<<<<<<<
@@ -16,11 +78,6 @@ print(
 You must run the following commands to complete setup:
 
 cd {{ cookiecutter.project_slug }}
-git init .
-poetry install
-pre-commit autoupdate
-pre-commit install
-git add .
-git commit -am"chore: initial files"
+./bin/init-repo.sh
 """
 )

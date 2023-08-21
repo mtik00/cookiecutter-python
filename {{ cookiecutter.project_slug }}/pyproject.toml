@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "{{ cookiecutter.project_slug }}"
-version = "0.1.0"
+version = "0.0.0"
 description = "{{ cookiecutter.project_description }}"
 authors = ["{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"]
 license = "{{ cookiecutter.license }}"
@@ -17,6 +17,32 @@ ipython = "^8.14.0"
 black = "^23.7.0"
 flake8 = "^6.1.0"
 pre-commit = "^3.3.3"
+commitizen = "^3.6.0"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.0.0"
+version_files = [
+    "pyproject.toml:version"
+]
+update_changelog_on_bump = true
+gpg_sign = false
+annotated_tag = true
+style = [
+    ["qmark", "fg:#ff9d00 bold"],
+    ["question", "bold"],
+    ["answer", "fg:#ff9d00 bold"],
+    ["pointer", "fg:#ff9d00 bold"],
+    ["highlighted", "fg:#ff9d00 bold"],
+    ["selected", "fg:#cc5454"],
+    ["separator", "fg:#cc5454"],
+    ["instruction", ""],
+    ["text", ""],
+    ["disabled", "fg:#858585 italic"]
+]
+
+[tool.commitizen.customize]
+change_type_map = {"feat" = "Feature"}
 
 [build-system]
 requires = ["poetry-core"]
