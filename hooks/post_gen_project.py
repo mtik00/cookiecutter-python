@@ -11,24 +11,13 @@ import datetime
 
 def request(
     url: str,
-    method: str | None = None,
-    data: dict | None = None,
-    query_params: dict | None = None,
     raise_on_error: bool = True,
 ) -> str | dict | list:
     headers = {
         "Content-Type": "application/vnd.github+json",
     }
 
-    encoded_data: bytes | None = None
-    if data:
-        encoded_data = json.dumps(data).encode("utf-8")
-
-    if query_params:
-        encoded_params = urllib.parse.urlencode(query_params)
-        url = f"{url}?{encoded_params}"
-
-    req = urllib.request.Request(url, data=encoded_data, headers=headers, method=method)
+    req = urllib.request.Request(url, headers=headers, method="GET")
 
     page = None
     try:
