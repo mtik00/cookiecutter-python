@@ -12,6 +12,7 @@ fi
 git init .
 git config --local user.name "{{ cookiecutter.full_name }}"
 git config --local user.email "{{ cookiecutter.email }}"
+git add -f .envrc
 python -m pip install --upgrade pip
 poetry install
 poetry up --latest
